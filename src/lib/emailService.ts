@@ -4,6 +4,7 @@ interface EmailData {
   restaurant_name: string;
   review_text: string;
   rating: number;
+  poll_answer: "yes" | "no" | null;
   created_at: string;
 }
 
@@ -14,6 +15,7 @@ export const sendReviewEmail = async (data: EmailData) => {
       restaurant_name: data.restaurant_name,
       review_text: data.review_text,
       rating: data.rating,
+      poll_answer: data.poll_answer,
       created_at: data.created_at,
       message: `New review received for ${data.restaurant_name} with ${data.rating} stars: ${data.review_text}`,
       // HTML template variables

@@ -9,12 +9,13 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { sendReviewEmail } from "@/lib/emailService";
 import { Navigation } from "@/components/Navigation";
-import { Loader2, Send, AlertCircle, CheckCircle } from "lucide-react";
+import { Loader2, Send, AlertCircle, CheckCircle, Smile, Frown } from "lucide-react";
 
 export const ReviewForm = () => {
   const [restaurantName, setRestaurantName] = useState("");
   const [reviewText, setReviewText] = useState("");
   const [rating, setRating] = useState(0);
+  const [pollAnswer, setPollAnswer] = useState<"yes" | "no" | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
   const { toast } = useToast();
@@ -47,6 +48,11 @@ export const ReviewForm = () => {
     // Rating validation
     if (rating === 0) {
       newErrors.rating = "Please select a rating";
+    }
+
+    // Poll answer validation
+    if (!pollAnswer) {
+      newErrors.pollAnswer = "Please answer the poll question";
     }
 
     setErrors(newErrors);
@@ -85,6 +91,7 @@ export const ReviewForm = () => {
         restaurant_name: restaurantName.trim(),
         review_text: reviewText.trim(),
         rating: rating,
+        poll_answer: pollAnswer,
         created_at: new Date().toISOString()
       };
 
@@ -103,6 +110,7 @@ export const ReviewForm = () => {
       setRestaurantName("");
       setReviewText("");
       setRating(0);
+      setPollAnswer(null);
       setErrors({});
 
     } catch (error) {
@@ -146,6 +154,15 @@ export const ReviewForm = () => {
     }
   };
 
+  const handlePollAnswer = (answer: "yes" | "no") => {
+    setPollAnswer(answer);
+    
+    // Clear error when user selects an answer
+    if (errors.pollAnswer) {
+      setErrors(prev => ({ ...prev, pollAnswer: "" }));
+    }
+  };
+
   return (
     <div 
       className="min-h-screen flex items-center justify-center p-8 relative overflow-hidden"
@@ -164,15 +181,15 @@ export const ReviewForm = () => {
       
       {/* White Card Container */}
       <Card className="w-full max-w-2xl bg-white/95 backdrop-blur-sm shadow-2xl border-0">
-        <CardContent className="px-6 py-12">
-          <div className="text-center space-y-12">
+        <CardContent className="px-6 py-8">
+          <div className="text-center space-y-8">
             {/* Title */}
             <h1 className="text-3xl font-bold text-gray-800">
               Rate Our Content
             </h1>
 
             {/* Logo - Much Bigger */}
-            <div className="w-48 h-48 mx-auto flex items-center justify-center shadow-2xl rounded-full overflow-hidden">
+            <div className="w-40 h-40 lg:w-48 lg:h-48 mx-auto flex items-center justify-center shadow-2xl rounded-full overflow-hidden">
               <img 
                 src="/logo.jpg" 
                 alt="Bite Buddies Logo" 
@@ -198,7 +215,7 @@ export const ReviewForm = () => {
             </div>
 
             {/* Input Fields Container */}
-            <div className="space-y-6 max-w-md mx-auto">
+            <div className="space-y-4 max-w-md mx-auto">
               {/* Restaurant Name Input */}
               <div className="space-y-2">
                 <Input
@@ -206,7 +223,7 @@ export const ReviewForm = () => {
                   placeholder="Enter Restaurant Name"
                   value={restaurantName}
                   onChange={handleRestaurantNameChange}
-                  className={`h-16 border-2 rounded-lg px-4 focus:outline-none focus:ring-0 placeholder:text-gray-500 text-base md:text-lg ${
+                  className={`h-12 lg:h-10 border-2 rounded-md px-4 focus:outline-none focus:ring-0 placeholder:text-gray-500 text-sm lg:text-base ${
                     errors.restaurantName 
                       ? 'border-red-300 focus:border-red-500' 
                       : 'border-gray-300 focus:border-gray-300'
@@ -214,7 +231,6 @@ export const ReviewForm = () => {
                   style={{ 
                     outline: 'none', 
                     boxShadow: 'none',
-                    
                     lineHeight: '1.5'
                   }}
                 />
@@ -232,8 +248,8 @@ export const ReviewForm = () => {
                   placeholder="Enter your review (minimum 10 characters)"
                   value={reviewText}
                   onChange={handleReviewTextChange}
-                  rows={4}
-                  className={`h-24 border-2 rounded-lg px-4 py-3 resize-none focus:outline-none focus:ring-0 placeholder:text-gray-500 text-base md:text-lg ${
+                  rows={3}
+                  className={`min-h-[72px] border-2 rounded-md px-4 py-3 resize-none focus:outline-none focus:ring-0 placeholder:text-gray-500 text-sm lg:text-base ${
                     errors.reviewText 
                       ? 'border-red-300 focus:border-red-500' 
                       : 'border-gray-300 focus:border-gray-300'
@@ -241,7 +257,6 @@ export const ReviewForm = () => {
                   style={{ 
                     outline: 'none', 
                     boxShadow: 'none',
-                    
                     lineHeight: '1.5'
                   }}
                 />
@@ -253,14 +268,54 @@ export const ReviewForm = () => {
                 )}
               </div>
 
+              {/* Poll Section */}
+              <div className="space-y-3 pt-2">
+                <h3 className="text-sm lg:text-base font-medium text-gray-500 text-left">
+                  Would you consider working with us again?
+                </h3>
+                <div className="flex gap-4">
+                  <button
+                    type="button"
+                    onClick={() => handlePollAnswer("yes")}
+                    className={`flex items-center gap-3 p-3 rounded-md transition-all duration-200 ${
+                      pollAnswer === "yes"
+                        ? "bg-green-100 border-2 border-green-500 text-green-700"
+                        : "bg-gray-50 border-2 border-gray-200 text-gray-600 hover:bg-gray-100"
+                    }`}
+                  >
+                    <Smile className={`w-6 h-6 ${pollAnswer === "yes" ? "text-green-600" : "text-gray-500"}`} />
+                    <span className="text-sm font-medium">Yes</span>
+                  </button>
+                  
+                  <button
+                    type="button"
+                    onClick={() => handlePollAnswer("no")}
+                    className={`flex items-center gap-3 p-3 rounded-md transition-all duration-200 ${
+                      pollAnswer === "no"
+                        ? "bg-red-100 border-2 border-red-500 text-red-700"
+                        : "bg-gray-50 border-2 border-gray-200 text-gray-600 hover:bg-gray-100"
+                    }`}
+                  >
+                    <Frown className={`w-6 h-6 ${pollAnswer === "no" ? "text-red-600" : "text-gray-500"}`} />
+                    <span className="text-sm font-medium">No</span>
+                  </button>
+                </div>
+                {errors.pollAnswer && (
+                  <div className="flex items-center gap-1 text-xs text-red-500">
+                    <AlertCircle className="w-3 h-3" />
+                    <span>{errors.pollAnswer}</span>
+                  </div>
+                )}
+              </div>
+
               {/* Submit Button - Outside Input Fields */}
-              <div className="flex justify-end pt-4">
+              <div className="flex justify-end pt-3">
                 <Button 
                   type="submit" 
                   onClick={handleSubmit}
-                  className="bg-orange-500 text-lg hover:bg-orange-600 text-white font-semibold px-6 py-6 rounded-lg text-base md:text-lg"
-                  style={{ fontSize: '18px' }}
-                  disabled={isSubmitting || rating === 0 || !restaurantName.trim() || !reviewText.trim()}
+                  className="bg-orange-500 text-lg hover:bg-orange-600 text-white font-semibold px-6 py-4 lg:py-3 rounded-md text-sm lg:text-base"
+                  style={{ fontSize: '16px' }}
+                  disabled={isSubmitting || rating === 0 || !restaurantName.trim() || !reviewText.trim() || !pollAnswer}
                 >
                   {isSubmitting ? (
                     <>
