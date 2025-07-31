@@ -36,6 +36,7 @@ export const Reviews = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [reviewToDelete, setReviewToDelete] = useState<Review | null>(null);
+  const [deleteConfirmation, setDeleteConfirmation] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [reviewsPerPage] = useState(8);
   const [selectedReview, setSelectedReview] = useState<Review | null>(null);
@@ -158,6 +159,7 @@ export const Reviews = () => {
     } finally {
       setDeleteDialogOpen(false);
       setReviewToDelete(null);
+      setDeleteConfirmation("");
     }
   };
 
@@ -405,17 +407,28 @@ export const Reviews = () => {
           <AlertDialogHeader>
             <AlertDialogTitle className="text-gray-800">Delete Review</AlertDialogTitle>
             <AlertDialogDescription className="text-gray-600">
-              Are you sure you want to delete this review for "{reviewToDelete?.restaurant_name}"? 
-              This action cannot be undone.
+              To confirm deletion, please type the restaurant name: <strong>"{reviewToDelete?.restaurant_name}"</strong>
             </AlertDialogDescription>
           </AlertDialogHeader>
+          <div className="py-4">
+            <Input
+              placeholder="Type the restaurant name to confirm"
+              value={deleteConfirmation}
+              onChange={(e) => setDeleteConfirmation(e.target.value)}
+              className="w-full border-gray-200 focus:border-orange-500 focus:ring-orange-200"
+            />
+          </div>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-gray-200 text-gray-600 hover:bg-gray-50">
+            <AlertDialogCancel 
+              className="border-gray-200 text-gray-600 hover:bg-gray-50"
+              onClick={() => setDeleteConfirmation("")}
+            >
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction 
               onClick={confirmDelete}
-              className="bg-orange-500 hover:bg-orange-600 text-white"
+              disabled={deleteConfirmation !== reviewToDelete?.restaurant_name}
+              className="bg-orange-500 hover:bg-orange-600 text-white disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
             >
               Delete Review
             </AlertDialogAction>
