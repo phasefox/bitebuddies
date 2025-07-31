@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { StarRating } from "@/components/StarRating";
 import { useToast } from "@/hooks/use-toast";
 import { supabase, Review } from "@/lib/supabase";
-import { Search, Calendar, MessageSquare, ChevronRight, Filter, Plus, Trash2, ChevronLeft, ChevronRight as ChevronRightIcon } from "lucide-react";
+import { Search, Calendar, MessageSquare, ChevronRight, Filter, Plus, Trash2, ChevronLeft, ChevronRight as ChevronRightIcon, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
@@ -20,6 +20,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export const Reviews = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -32,6 +38,8 @@ export const Reviews = () => {
   const [reviewToDelete, setReviewToDelete] = useState<Review | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [reviewsPerPage] = useState(8);
+  const [selectedReview, setSelectedReview] = useState<Review | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -59,6 +67,7 @@ export const Reviews = () => {
         title: "Error loading reviews",
         description: "Failed to load reviews. Please try again.",
         variant: "destructive",
+        duration: 2000,
       });
     } finally {
       setIsLoading(false);
@@ -136,6 +145,7 @@ export const Reviews = () => {
       toast({
         title: "Review deleted successfully",
         description: "The review has been permanently removed.",
+        duration: 2000,
       });
     } catch (error) {
       console.error('Error deleting review:', error);
@@ -143,6 +153,7 @@ export const Reviews = () => {
         title: "Error deleting review",
         description: "Failed to delete the review. Please try again.",
         variant: "destructive",
+        duration: 2000,
       });
     } finally {
       setDeleteDialogOpen(false);
@@ -185,9 +196,9 @@ export const Reviews = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       {/* Header Section */}
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+      <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-between items-start sm:items-center">
         <div>
           <h1 className="text-3xl font-bold text-gray-800">Customer Reviews</h1>
           <p className="text-gray-600 mt-1">
@@ -197,7 +208,7 @@ export const Reviews = () => {
       </div>
 
       {/* Filters Section */}
-      <div className="flex flex-col lg:flex-row gap-4">
+      <div className="flex flex-col lg:flex-row gap-3 md:gap-4">
         {/* Search */}
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -210,7 +221,7 @@ export const Reviews = () => {
         </div>
         
         {/* Rating and Time Filters - Stacked on mobile, side by side on desktop */}
-        <div className="flex flex-row sm:flex-row gap-2 lg:gap-4">
+        <div className="flex flex-row sm:flex-row gap-2 md:gap-4">
           {/* Rating Filter */}
           <Select value={ratingFilter} onValueChange={setRatingFilter}>
             <SelectTrigger className="w-full sm:w-48 bg-white border-gray-200 focus:border-gray-200 focus:ring-0 rounded-lg">
@@ -253,32 +264,43 @@ export const Reviews = () => {
           </div>
         </div>
       ) : (
-        <div className="grid grid-rows-[1fr_auto_auto] min-h-[600px] gap-6">
+        <div className="grid grid-rows-[1fr_auto_auto] min-h-[600px] gap-4 md:gap-6">
           {/* Reviews Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 content-start">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4 content-start">
             {currentReviews.map((review) => (
-              <div key={review.id} className="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-md transition-shadow duration-200 group cursor-pointer">
-                <div className="space-y-4">
+              <div 
+                key={review.id} 
+                className="bg-white border border-gray-200 rounded-lg p-3 lg:p-5 hover:shadow-md transition-shadow duration-200 group cursor-pointer lg:flex lg:flex-col lg:h-full"
+                onClick={() => {
+                  if (window.innerWidth >= 1024) { // Only on desktop (lg breakpoint)
+                    setSelectedReview(review);
+                    setDialogOpen(true);
+                  }
+                }}
+              >
+                <div className="space-y-4 lg:flex-1 lg:flex lg:flex-col">
                   {/* Header with Restaurant Name and Rating */}
                   <div className="space-y-2">
-                    <h3 className="font-semibold text-sm text-gray-800 line-clamp-1">
+                    <h3 className="font-semibold text-base sm:text-sm lg:text-base text-gray-800 line-clamp-1">
                       {review.restaurant_name}
                     </h3>
-                    <div className="flex items-center gap-2">
-                      <StarRating rating={review.rating} readonly size="sm" />
-                      <Badge variant="secondary" className="text-xs bg-orange-100 text-orange-800">
+                    <div className="flex items-center gap-4 lg:ml-1">
+                      <div className="lg:scale-110">
+                        <StarRating rating={review.rating} readonly size="sm" />
+                      </div>
+                      <Badge variant="secondary" className="text-xs lg:text-xs bg-orange-100 text-orange-800">
                         {review.rating}★
                       </Badge>
                     </div>
                   </div>
                   
                   {/* Review Text */}
-                  <p className="text-sm text-gray-600 line-clamp-3 leading-relaxed">
+                  <p className="text-sm lg:text-sm text-gray-600 lg:line-clamp-3 leading-relaxed lg:flex-1">
                     {review.review_text}
                   </p>
                   
                   {/* Footer */}
-                  <div className="flex items-center justify-between pt-3 border-t border-gray-200/50">
+                  <div className="flex items-center justify-between pt-3 border-t border-gray-200/50 lg:mt-auto">
                     <div className="flex items-center gap-1 text-xs text-gray-500">
                       <Calendar className="w-3 h-3" />
                       <span>{formatDate(review.created_at)}</span>
@@ -302,34 +324,53 @@ export const Reviews = () => {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-4 py-6">
+            <div className="flex items-center justify-center gap-2 lg:gap-4 py-3 lg:py-6">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={goToPreviousPage}
                 disabled={currentPage === 1}
-                className="border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50"
+                className="border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50 text-xs lg:text-sm"
               >
-                <ChevronLeft className="w-4 h-4 mr-1" />
+                <ChevronLeft className="w-3 h-3 lg:w-4 lg:h-4 mr-1" />
                 Previous
               </Button>
               
               <div className="flex items-center gap-1">
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                  <Button
-                    key={page}
-                    variant={currentPage === page ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => goToPage(page)}
-                    className={
-                      currentPage === page
-                        ? "bg-orange-500 hover:bg-orange-600 text-white min-w-[40px] "
-                        : "border-gray-200 text-gray-600 hover:bg-gray-50 min-w-[40px]"
+                {(() => {
+                  const pages = [];
+                  if (totalPages <= 3) {
+                    // If 3 or fewer pages, show all
+                    for (let i = 1; i <= totalPages; i++) {
+                      pages.push(i);
                     }
-                  >
-                    {page}
-                  </Button>
-                ))}
+                  } else {
+                    // Always show 3 pages
+                    if (currentPage === 1) {
+                      pages.push(1, 2, 3);
+                    } else if (currentPage === totalPages) {
+                      pages.push(totalPages - 2, totalPages - 1, totalPages);
+                    } else {
+                      pages.push(currentPage - 1, currentPage, currentPage + 1);
+                    }
+                  }
+                  
+                  return pages.map((page) => (
+                    <Button
+                      key={page}
+                      variant={currentPage === page ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => goToPage(page)}
+                      className={
+                        currentPage === page
+                          ? "bg-orange-500 hover:bg-orange-600 text-white min-w-[32px] lg:min-w-[40px] text-xs lg:text-sm"
+                          : "border-gray-200 text-gray-600 hover:bg-gray-50 min-w-[32px] lg:min-w-[40px] text-xs lg:text-sm"
+                      }
+                    >
+                      {page}
+                    </Button>
+                  ));
+                })()}
               </div>
               
               <Button
@@ -337,19 +378,19 @@ export const Reviews = () => {
                 size="sm"
                 onClick={goToNextPage}
                 disabled={currentPage === totalPages}
-                className="border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50"
+                className="border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50 text-xs lg:text-sm"
               >
                 Next
-                <ChevronRightIcon className="w-4 h-4 ml-1" />
+                <ChevronRightIcon className="w-3 h-3 lg:w-4 lg:h-4 ml-1" />
               </Button>
             </div>
           )}
 
           {/* Results Summary */}
-          <div className="flex items-center justify-between text-sm text-gray-500 pt-4 border-t border-gray-100">
+          <div className="flex items-center justify-between text-xs lg:text-sm text-gray-500 pt-2 lg:pt-4 border-t border-gray-100">
             <span>
               {filteredReviews.length > 0 
-                ? `Showing ${startIndex + 1}-${Math.min(endIndex, filteredReviews.length)} of ${filteredReviews.length} reviews`
+                ? `${startIndex + 1}-${Math.min(endIndex, filteredReviews.length)} of ${filteredReviews.length} reviews`
                 : "No reviews found"
               }
             </span>
@@ -381,6 +422,47 @@ export const Reviews = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Review Detail Dialog */}
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="bg-white border-gray-200 max-w-md mx-auto p-6">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-semibold text-gray-800">
+              {selectedReview?.restaurant_name}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-2">
+            <div className="flex items-center gap-4">
+              <StarRating rating={selectedReview?.rating || 0} readonly size="md" />
+              <Badge variant="secondary" className="text-xs  bg-orange-100 text-orange-800">
+                {selectedReview?.rating}★
+              </Badge>
+            </div>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              {selectedReview?.review_text}
+            </p>
+            <div className="flex items-center justify-between pt-3 border-t border-gray-200/50">
+              <div className="flex items-center gap-1 text-xs text-gray-500">
+                <Calendar className="w-3 h-3" />
+                <span>{selectedReview ? formatDate(selectedReview.created_at) : ''}</span>
+              </div>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-6 w-6 p-0 text-red-500 hover:text-red-700 hover:bg-red-50"
+                onClick={() => {
+                  if (selectedReview) {
+                    handleDeleteReview(selectedReview);
+                    setDialogOpen(false);
+                  }
+                }}
+              >
+                <Trash2 className="w-3 h-3" />
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

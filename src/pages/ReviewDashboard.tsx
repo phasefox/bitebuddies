@@ -43,6 +43,7 @@ export const ReviewDashboard = () => {
         title: "Error loading reviews",
         description: "Failed to load reviews. Please try again.",
         variant: "destructive",
+        duration: 2000,
       });
     } finally {
       setIsLoading(false);
@@ -116,6 +117,7 @@ export const ReviewDashboard = () => {
     toast({
       title: "PDF Export",
       description: "PDF export functionality will be implemented with a backend service.",
+      duration: 2000,
     });
   };
 

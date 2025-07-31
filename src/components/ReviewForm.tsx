@@ -165,13 +165,14 @@ export const ReviewForm = () => {
 
   return (
     <div 
-      className="min-h-screen flex items-center justify-center p-8 relative overflow-hidden"
+      className="min-h-screen flex items-center justify-center p-4 md:p-8 relative overflow-y-auto"
       style={{
         backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 1200 800\'%3E%3Cdefs%3E%3CradialGradient id=\'a\' cx=\'50%25\' cy=\'50%25\' r=\'50%25\'%3E%3Cstop offset=\'0%25\' stop-color=\'%23FF6B35\'/%3E%3Cstop offset=\'50%25\' stop-color=\'%23FFD93D\'/%3E%3Cstop offset=\'100%25\' stop-color=\'%23FF8E53\'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width=\'100%25\' height=\'100%25\' fill=\'url(%23a)\'/%3E%3C/svg%3E")',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
-        minHeight: '100vh'
+        scrollBehavior: 'smooth',
+        WebkitOverflowScrolling: 'touch'
       }}
     >
       {/* Blurred Background Overlay */}
@@ -180,8 +181,8 @@ export const ReviewForm = () => {
       <Navigation />
       
       {/* White Card Container */}
-      <Card className="w-full max-w-2xl bg-white/95 backdrop-blur-sm shadow-2xl border-0">
-        <CardContent className="px-6 py-8">
+      <Card className="w-full max-w-xl bg-white/95 backdrop-blur-sm shadow-2xl border-0 my-2 md:my-8">
+        <CardContent className="px-4 py-6 md:px-6 md:py-10">
           <div className="text-center space-y-8">
             {/* Title */}
             <h1 className="text-3xl font-bold text-gray-800">
@@ -223,7 +224,7 @@ export const ReviewForm = () => {
                   placeholder="Enter Restaurant Name"
                   value={restaurantName}
                   onChange={handleRestaurantNameChange}
-                  className={`h-12 lg:h-10 border-2 rounded-md px-4 focus:outline-none focus:ring-0 placeholder:text-gray-500 text-sm lg:text-base ${
+                  className={`h-12 lg:h-10 border-2 rounded-md px-4 focus:outline-none focus:ring-0 placeholder:text-gray-500 ${
                     errors.restaurantName 
                       ? 'border-red-300 focus:border-red-500' 
                       : 'border-gray-300 focus:border-gray-300'
@@ -231,7 +232,8 @@ export const ReviewForm = () => {
                   style={{ 
                     outline: 'none', 
                     boxShadow: 'none',
-                    lineHeight: '1.5'
+                    lineHeight: '1.5',
+                    fontSize: '16px'
                   }}
                 />
                 {errors.restaurantName && (
@@ -249,7 +251,7 @@ export const ReviewForm = () => {
                   value={reviewText}
                   onChange={handleReviewTextChange}
                   rows={3}
-                  className={`min-h-[72px] border-2 rounded-md px-4 py-3 resize-none focus:outline-none focus:ring-0 placeholder:text-gray-500 text-sm lg:text-base ${
+                  className={`min-h-[72px] border-2 rounded-md px-4 py-3 resize-none focus:outline-none focus:ring-0 placeholder:text-gray-500 ${
                     errors.reviewText 
                       ? 'border-red-300 focus:border-red-500' 
                       : 'border-gray-300 focus:border-gray-300'
@@ -257,7 +259,8 @@ export const ReviewForm = () => {
                   style={{ 
                     outline: 'none', 
                     boxShadow: 'none',
-                    lineHeight: '1.5'
+                    lineHeight: '1.5',
+                    fontSize: '16px'
                   }}
                 />
                 {errors.reviewText && (
@@ -313,7 +316,7 @@ export const ReviewForm = () => {
                 <Button 
                   type="submit" 
                   onClick={handleSubmit}
-                  className="bg-orange-500 text-lg hover:bg-orange-600 text-white font-semibold px-6 py-4 lg:py-3 rounded-md text-sm lg:text-base"
+                  className="bg-orange-500 text-lg hover:bg-orange-600 text-white font-semibold px-6 py-4 lg:py-3 rounded-md"
                   style={{ fontSize: '16px' }}
                   disabled={isSubmitting || rating === 0 || !restaurantName.trim() || !reviewText.trim() || !pollAnswer}
                 >

@@ -77,8 +77,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </header>
 
           {/* Main Content */}
-          <main className="flex-1 p-4 lg:p-4 bg-gradient-to-br from-gray-50/50 to-white/50">
-            <div className="mx-auto px-3 pt-3">
+          <main className="flex-1 p-2 lg:p-4 bg-gradient-to-br from-gray-50/50 to-white/50 pb-10 lg:pb-4">
+            <div className="mx-auto px-2 pt-2 lg:px-3 lg:pt-3">
               {children}
             </div>
           </main>

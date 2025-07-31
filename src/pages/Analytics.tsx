@@ -72,7 +72,7 @@ export const Analytics = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-800">Analytics Overview</h1>
@@ -82,60 +82,60 @@ export const Analytics = () => {
       </div>
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
         <Card className="bg-white border-gray-200">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Total Reviews</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 lg:p-6">
+            <CardTitle className="text-sm lg:text-base font-medium text-gray-600">Total Reviews</CardTitle>
             <MessageSquare className="h-4 w-4 text-orange-500" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-800">{stats.totalReviews.toLocaleString()}</div>
-            <p className="text-xs text-gray-500 mt-1">All time reviews</p>
+          <CardContent className="pr-3 pl-3 pb-3 lg:p-6 lg:pt-0">
+            <div className="text-2xl lg:text-3xl font-bold text-gray-800">{stats.totalReviews.toLocaleString()}</div>
+            <p className="text-xs lg:text-sm text-gray-500 mt-1">All time reviews</p>
           </CardContent>
         </Card>
         
         <Card className="bg-white border-gray-200">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Average Rating</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 lg:p-6">
+            <CardTitle className="text-sm lg:text-base font-medium text-gray-600">Average Rating</CardTitle>
             <Star className="h-4 w-4 text-orange-500" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-800">{stats.averageRating.toFixed(1)}</div>
-            <p className="text-xs text-gray-500 mt-1">Out of 5 stars</p>
+          <CardContent className="pr-3 pl-3 pb-3 lg:p-6 lg:pt-0">
+            <div className="text-2xl lg:text-3xl font-bold text-gray-800">{stats.averageRating.toFixed(1)}</div>
+            <p className="text-xs lg:text-sm text-gray-500 mt-1">Out of 5 stars</p>
           </CardContent>
         </Card>
         
         <Card className="bg-white border-gray-200">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Recent Reviews</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 lg:p-6">
+            <CardTitle className="text-sm lg:text-base font-medium text-gray-600">Recent Reviews</CardTitle>
             <Calendar className="h-4 w-4 text-orange-500" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-800">{stats.recentReviews}</div>
-            <p className="text-xs text-gray-500 mt-1">Last 7 days</p>
+          <CardContent className="pr-3 pl-3 pb-3 lg:p-6 lg:pt-0">
+            <div className="text-2xl lg:text-3xl font-bold text-gray-800">{stats.recentReviews}</div>
+            <p className="text-xs lg:text-sm text-gray-500 mt-1">Last 7 days</p>
           </CardContent>
         </Card>
         
         <Card className="bg-white border-gray-200">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Restaurants</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 lg:p-6">
+            <CardTitle className="text-sm lg:text-base font-medium text-gray-600">Restaurants</CardTitle>
             <Users className="h-4 w-4 text-orange-500" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-800">{stats.uniqueRestaurants}</div>
-            <p className="text-xs text-gray-500 mt-1">Unique locations</p>
+          <CardContent className="pr-3 pl-3 pb-3 lg:p-6 lg:pt-0">
+            <div className="text-2xl lg:text-3xl font-bold text-gray-800">{stats.uniqueRestaurants}</div>
+            <p className="text-xs lg:text-sm text-gray-500 mt-1">Unique locations</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Rating Distribution and Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
         {/* Rating Distribution */}
         <Card className="bg-white border-gray-200">
-          <CardHeader>
-            <CardTitle className="text-lg text-gray-800">Rating Distribution</CardTitle>
+          <CardHeader className="p-3 lg:p-6">
+            <CardTitle className="text-lg lg:text-xl text-gray-800">Rating Distribution</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-3 p-3 lg:p-6 lg:pt-0">
             {[
               { stars: 5, count: stats.fiveStarCount },
               { stars: 4, count: stats.fourStarCount },
@@ -166,14 +166,14 @@ export const Analytics = () => {
         </Card>
 
         {/* Recent Activity */}
-        <Card className="bg-white border-gray-200">
-          <CardHeader>
-            <CardTitle className="text-lg text-gray-800">Recent Activity</CardTitle>
+        <Card className="bg-white border-gray-200 mb-10 lg:mb-0">
+          <CardHeader className="p-3 lg:p-6">
+            <CardTitle className="text-lg lg:text-xl text-gray-800">Recent Activity</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-3 lg:p-6 lg:pt-0">
             <div className="space-y-3">
               {reviews.slice(0, 3).map((review) => (
-                <div key={review.id} className="flex items-center gap-3 p-3 rounded-lg bg-gray-50/50">
+                <div key={review.id} className="flex items-center gap-3 p-3 rounded-md bg-gray-50 border border-gray-200">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="font-medium text-sm text-gray-800 truncate">{review.restaurant_name}</span>
